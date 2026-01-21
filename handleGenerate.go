@@ -10,6 +10,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
+
+	excelutils "github.com/jamjallred/sf_server_utils"
 )
 
 func (s *session) handleGenerate(r io.Reader) error {
@@ -69,7 +72,31 @@ func (s *session) handleGenerate(r io.Reader) error {
 		return nil
 	}
 
-	// call utils here
+	log.Println("File successfully saved at: ", xlsxPath)
+	savePath := "./assets/" + os.Getenv("FILENAME_PREFIX") + time.Now().Format("2006-01-02") + ".xlsx"
+
+	// Generate the excel file to attach to the email
+	if err := excelutils.Generate(xlsxPath, savePath); err != nil {
+		log.Printf("unable to generate xlsx file")
+		return err
+	}
+	defer os.Remove(savePath)
+
+	// Send the email
+	recipients := []string{
+		"stancoppinger@tulsacoxmail.com",
+		"mike.allred@tulsacoxmail.com",
+		"gregg.wessels@tulsacoxmail.com",
+		"jaxcoppinger@tulsacoxmail.com",
+		"jj.soonerfleet@gmail.com",
+	}
+
+	body := "Spreadsheet generated successfully!"
+
+	if err := sendEmail(recipients, body, savePath); err != nil {
+		fmt.Println("unable to send email: ", err)
+		return err
+	}
 
 	return nil
 }

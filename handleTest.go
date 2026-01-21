@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/smtp"
 )
 
 func (s *session) handleTest(r io.Reader) error {
@@ -20,27 +19,14 @@ func (s *session) handleTest(r io.Reader) error {
 		return nil
 	}
 
-	return sendPlainReply(
-		"test@mail.soonerfleet.com",
-		replyTo,
-		"Test successful <subject>",
-		"Test successful <body>",
-	)
-}
+	body := "This is a test response!"
+	filepath := "./.gitignore"
 
-func sendPlainReply(from, to, subject, body string) error {
-	log.Print("further generating plain reply...")
-	msg := []byte(
-		"From: " + from + "\r\n" +
-			"To: " + to + "\r\n" +
-			"Subject: " + subject + "\r\n" +
-			"MIME-Version: 1.0\r\n" +
-			"Content-Type: text/plain; charset=utf-8\r\n" +
-			"\r\n" +
-			body + "\r\n",
-	)
+	err := sendEmail([]string{replyTo}, body, filepath)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 
-	log.Print("sending reply!")
-
-	return smtp.SendMail(outboundAddr, nil, from, []string{to}, msg)
+	return nil
 }
