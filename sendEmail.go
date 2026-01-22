@@ -35,5 +35,6 @@ func sendEmail(recipients []string, body, filepath string) error {
 	}
 
 	log.Println("email sent, ID: ", id)
+	log.Println("Recipients: ", recipients)
 	return nil
 }

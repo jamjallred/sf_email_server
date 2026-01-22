@@ -41,35 +41,29 @@ func (s *session) handleGenerate(r io.Reader) error {
 	var xlsxPath string
 	for {
 		part, err := mr.NextPart()
+		fmt.Println("email part:")
+		fmt.Println(part) // TESTING LINE ````````````````````````````````````````
 		if err == io.EOF {
+			fmt.Println("no more parts")
 			break
 		}
-		if err != nil {
-			return fmt.Errorf("failed to read part: %v", err)
-		}
+		part.Header.Get("Content-Disposition")
 
-		filename := part.FileName()
-		if filename == "" || !strings.HasSuffix(strings.ToLower(filename), ".xlsx") {
+		if !strings.Contains(part.Header.Get("Content-Disposition"), ".xlsx") {
 			continue
 		}
 
-		xlsxPath = filepath.Join(os.TempDir(), filename)
+		// we have an excel file attachment and it's the current part
+		// save this part to disk
+		xlsxPath = filepath.Join(os.TempDir(), "temp_excel_file.xlsx")
 		f, err := os.Create(xlsxPath)
-		defer os.Remove(xlsxPath)
 		if err != nil {
-			return fmt.Errorf("cannot create file: %v", err)
+			fmt.Println("error creating xlsxPath")
 		}
-		if _, err := io.Copy(f, part); err != nil {
-			f.Close()
-			return fmt.Errorf("cannot write attachment: %v", err)
+		_, err = io.Copy(f, part)
+		if err != nil {
+			fmt.Println("error saving file to disk")
 		}
-		f.Close()
-		break
-	}
-
-	if xlsxPath == "" {
-		log.Printf("no .xlsx attachment found")
-		return nil
 	}
 
 	log.Println("File successfully saved at: ", xlsxPath)
@@ -80,23 +74,26 @@ func (s *session) handleGenerate(r io.Reader) error {
 		log.Printf("unable to generate xlsx file")
 		return err
 	}
-	defer os.Remove(savePath)
 
 	// Send the email
-	recipients := []string{
-		"stancoppinger@tulsacoxmail.com",
-		"mike.allred@tulsacoxmail.com",
-		"gregg.wessels@tulsacoxmail.com",
-		"jaxcoppinger@tulsacoxmail.com",
-		"jj.soonerfleet@gmail.com",
-	}
+	// recipients := []string{
+	// 	"stancoppinger@tulsacoxmail.com",
+	// 	"mike.allred@tulsacoxmail.com",
+	// 	"gregg.wessels@tulsacoxmail.com",
+	// 	"jaxcoppinger@tulsacoxmail.com",
+	// 	"jj.soonerfleet@gmail.com",
+	// }
 
-	body := "Spreadsheet generated successfully!"
+	// body := "THIS IS A TEST EMAIL, DISREGARD" //Spreadsheet generated successfully!"
+	// if err := sendEmail(recipients, body, savePath); err != nil {
+	// 	fmt.Println("unable to send email: ", err)
+	// 	os.Remove(savePath)
+	os.Remove(xlsxPath)
+	// 	return err
+	// }
 
-	if err := sendEmail(recipients, body, savePath); err != nil {
-		fmt.Println("unable to send email: ", err)
-		return err
-	}
+	// os.Remove(savePath)
+	// os.Remove(xlsxPath)
 
 	return nil
 }

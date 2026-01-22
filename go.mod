@@ -4,7 +4,7 @@ go 1.25.4
 
 require (
 	github.com/emersion/go-smtp v0.24.0
-	github.com/jamjallred/sf_server_utils v0.0.0-20260120193413-2727bd6584b3
+	github.com/jamjallred/sf_server_utils v0.0.0-00010101000000-000000000000
 	github.com/joho/godotenv v1.5.1
 	github.com/mailgun/mailgun-go/v4 v4.23.0
 )
