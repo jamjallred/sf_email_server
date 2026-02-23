@@ -32,12 +32,14 @@ var allowedSenders = map[string]bool{
 	"gregg.wessels@tulsacoxmail.com": true,
 	"jaxcoppinger@tulsacoxmail.com":  true,
 	"jj.soonerfleet@gmail.com":       true,
+	"no-reply@mail.soonerfleet.com":  true,
 }
 
 // backend implements the SMTP server backend.
 type backend struct{}
 
 func (b *backend) NewSession(c *smtplib.Conn) (smtplib.Session, error) {
+	log.Printf("New connection from %s", c.Conn().RemoteAddr())
 	return &session{}, nil
 }
 
@@ -59,7 +61,7 @@ func (s *session) Mail(from string, opts *smtplib.MailOptions) error {
 
 	if len(allowedSenders) > 0 && !allowedSenders[addr] {
 		log.Printf("Rejecting MAIL from non-allowed sender: %s", addr)
-		return smtplib.ErrAuthRequired
+		return errors.New("550 5.7.1 contact not permitted")
 	}
 
 	s.from = addr
@@ -71,7 +73,7 @@ func (s *session) Rcpt(to string, opts *smtplib.RcptOptions) error {
 	log.Printf("RCPT TO: %s", addr)
 
 	// whitelisting endpoints
-	if !allowedEndpoints[addr] && !allowedSenders[addr] {
+	if !allowedEndpoints[addr] {
 		log.Printf("Rejecting RCPT for non-allowed recipient: %s", addr)
 		return errors.New("550 5.7.1 unsupported endpoint")
 	}
