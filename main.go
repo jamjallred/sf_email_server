@@ -5,9 +5,11 @@ import (
 	"io"
 	"log"
 	"net/mail"
+	"os"
 	"strings"
 
 	smtplib "github.com/emersion/go-smtp"
+	"github.com/joho/godotenv"
 )
 
 // Configurable bits
@@ -19,20 +21,26 @@ const (
 )
 
 // whitelist for endpoints
-var allowedEndpoints = map[string]bool{
-	"generate@soonerfleet.com": true,
-	"reserve@soonerfleet.com":  true,
-	"test@soonerfleet.com":     true,
-}
+var allowedEndpoints = make(map[string]bool)
+var allowedSenders = make(map[string]bool)
 
-// whitelist for senders
-var allowedSenders = map[string]bool{
-	"stancoppinger@tulsacoxmail.com": true,
-	"mike.allred@tulsacoxmail.com":   true,
-	"gregg.wessels@tulsacoxmail.com": true,
-	"jaxcoppinger@tulsacoxmail.com":  true,
-	"jj.soonerfleet@gmail.com":       true,
-	"no-reply@mail.soonerfleet.com":  true,
+func load_config() {
+
+	val := os.Getenv("ALLOWED_ENDPOINTS")
+	for _, item := range strings.Split(val, ",") {
+		cleanItem := strings.ToLower(strings.TrimSpace(item))
+		if cleanItem != "" {
+			allowedEndpoints[cleanItem] = true
+		}
+	}
+
+	val = os.Getenv("ALLOWED_SENDERS")
+	for _, item := range strings.Split(val, ",") {
+		cleanItem := strings.ToLower(strings.TrimSpace(item))
+		if cleanItem != "" {
+			allowedSenders[cleanItem] = true
+		}
+	}
 }
 
 // backend implements the SMTP server backend.
@@ -53,23 +61,17 @@ func (s *session) Mail(from string, opts *smtplib.MailOptions) error {
 	addr := normalizeAddress(from)
 	log.Printf("MAIL FROM: %s", addr)
 
-	// whitelisting senders
-	if strings.HasSuffix(strings.ToLower(addr), "@mail.soonerfleet.com") {
+	if allowedSenders[addr] {
 		s.from = addr
 		return nil
 	}
 
-	if len(allowedSenders) > 0 && !allowedSenders[addr] {
-		log.Printf("Rejecting MAIL from non-allowed sender: %s", addr)
-		return errors.New("550 5.7.1 contact not permitted")
-	}
-
-	s.from = addr
-	return nil
+	log.Printf("Rejecting MAIL: %s is not a recognized sender", addr)
+	return errors.New("550 5.7.1 sender not authorized")
 }
 
 func (s *session) Rcpt(to string, opts *smtplib.RcptOptions) error {
-	addr := normalizeAddress(to)
+	addr := strings.ToLower(normalizeAddress(to))
 	log.Printf("RCPT TO: %s", addr)
 
 	// whitelisting endpoints
@@ -87,12 +89,29 @@ func (s *session) Data(r io.Reader) error {
 	log.Print("processing incoming email!")
 
 	if containsAddr(s.to, "generate@soonerfleet.com") {
-		return s.handleGenerate(r)
+		err := s.handleGenerate(r)
+		if err != nil {
+			log.Printf("Error in handleGenerate(): %s", err)
+		}
+		return nil
 
 	}
 
 	if containsAddr(s.to, "test@soonerfleet.com") {
-		return s.handleTest(r)
+		err := s.handleTest(r)
+		if err != nil {
+			log.Printf("Error in handleTest(): %s", err)
+		}
+		return nil
+
+	}
+
+	if containsAddr(s.to, "savetodb@soonerfleet.com") {
+		err := s.handleSaveToDB(r)
+		if err != nil {
+			log.Printf("Error in handleSaveToDB(): %s", err)
+		}
+		return nil
 	}
 
 	return nil
@@ -120,6 +139,9 @@ func normalizeAddress(raw string) string {
 }
 
 func main() {
+	godotenv.Load()
+	load_config()
+
 	be := &backend{}
 	s := smtplib.NewServer(be)
 

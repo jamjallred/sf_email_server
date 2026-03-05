@@ -460,3 +460,108 @@ Saving file...
 Sheet generated successfully.
 2026/02/23 20:36:09 email sent, ID:  <20260223203609.d142e56eccedef23@mail.soonerfleet.com>
 2026/02/23 20:36:09 Recipients:  [stancoppinger@tulsacoxmail.com mike.allred@tulsacoxmail.com gregg.wessels@tulsacoxmail.com jaxcoppinger@tulsacoxmail.com jj.soonerfleet@gmail.com]
+smtp/server 2026/02/24 04:52:14 error handling 35.203.210.25:53460: read tcp 192.168.1.117:25->35.203.210.25:53460: read: connection reset by peer
+smtp/server 2026/02/24 04:53:35 error handling 35.203.210.25:60288: read tcp 192.168.1.117:25->35.203.210.25:60288: read: connection reset by peer
+smtp/server 2026/02/24 04:53:52 error handling 35.203.210.25:61762: read tcp 192.168.1.117:25->35.203.210.25:61762: read: connection reset by peer
+smtp/server 2026/02/24 16:18:36 error handling 35.203.211.142:56194: read tcp 192.168.1.117:25->35.203.211.142:56194: read: connection reset by peer
+smtp/server 2026/02/24 16:19:07 error handling 35.203.211.142:58498: read tcp 192.168.1.117:25->35.203.211.142:58498: read: connection reset by peer
+smtp/server 2026/02/24 16:19:12 error handling 35.203.211.142:63520: read tcp 192.168.1.117:25->35.203.211.142:63520: read: connection reset by peer
+2026/02/25 04:06:39 MAIL FROM: teagan@sterlingpulse.com
+2026/02/25 04:06:39 Rejecting MAIL from non-allowed sender: teagan@sterlingpulse.com
+2026/02/25 04:06:40 MAIL FROM: kailani@speedrunranked.com
+2026/02/25 04:06:40 Rejecting MAIL from non-allowed sender: kailani@speedrunranked.com
+2026/02/25 04:06:40 MAIL FROM: maximus@sanctaforge.com
+2026/02/25 04:06:40 Rejecting MAIL from non-allowed sender: maximus@sanctaforge.com
+2026/02/25 04:06:41 MAIL FROM: jake@autobloomparts.com
+2026/02/25 04:06:41 Rejecting MAIL from non-allowed sender: jake@autobloomparts.com
+2026/02/25 04:06:43 MAIL FROM: nick@evergreenandember.com
+2026/02/25 04:06:43 Rejecting MAIL from non-allowed sender: nick@evergreenandember.com
+2026/02/25 04:06:44 MAIL FROM: raina@arrayrouter.com
+2026/02/25 04:06:44 Rejecting MAIL from non-allowed sender: raina@arrayrouter.com
+smtp/server 2026/02/25 05:12:45 error handling 147.185.132.239:49506: read tcp 192.168.1.117:25->147.185.132.239:49506: read: connection reset by peer
+smtp/server 2026/02/25 05:13:35 error handling 147.185.132.239:62436: read tcp 192.168.1.117:25->147.185.132.239:62436: read: connection reset by peer
+smtp/server 2026/02/25 05:13:37 error handling 147.185.132.239:58196: read tcp 192.168.1.117:25->147.185.132.239:58196: read: connection reset by peer
+smtp/server 2026/02/25 16:25:05 error handling 147.185.133.88:53733: read tcp 192.168.1.117:25->147.185.133.88:53733: read: connection reset by peer
+smtp/server 2026/02/26 04:01:26 error handling 35.203.210.236:56644: read tcp 192.168.1.117:25->35.203.210.236:56644: read: connection reset by peer
+smtp/server 2026/02/26 04:02:34 error handling 35.203.210.236:63528: read tcp 192.168.1.117:25->35.203.210.236:63528: read: connection reset by peer
+smtp/server 2026/02/26 04:02:44 error handling 35.203.210.236:60488: read tcp 192.168.1.117:25->35.203.210.236:60488: read: connection reset by peer
+smtp/server 2026/02/26 15:56:24 error handling 147.185.133.94:55628: read tcp 192.168.1.117:25->147.185.133.94:55628: read: connection reset by peer
+smtp/server 2026/02/26 15:56:45 error handling 147.185.133.94:64106: read tcp 192.168.1.117:25->147.185.133.94:64106: read: connection reset by peer
+smtp/server 2026/02/26 15:57:01 error handling 147.185.133.94:64136: read tcp 192.168.1.117:25->147.185.133.94:64136: read: connection reset by peer
+2026/02/26 19:38:06 MAIL FROM: jaxcoppinger@tulsacoxmail.com
+2026/02/26 19:38:06 RCPT TO: generate@soonerfleet.com
+2026/02/26 19:38:06 processing incoming email!
+email part:
+&{map[Content-Type:[multipart/alternative; boundary="----=_NextPart_001_009B_01DCA725.20DA2CB0"]] 0xc0001c6000  map[] {0xc0001e2070} 0 0 <nil> <nil>}
+email part:
+&{map[Content-Disposition:[attachment; filename="In-Service Inventory D2D 2.26.26.xlsx"] Content-Transfer-Encoding:[base64] Content-Type:[application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; name="In-Service Inventory D2D 2.26.26.xlsx"]] 0xc0001c6000  map[] {0xc0001e2150} 0 0 <nil> <nil>}
+Wrote 2487099 bytes to file
+email part:
+<nil>
+no more parts
+2026/02/26 19:38:06 File successfully saved at:  /tmp/temp_excel_file.xlsx
+This is the savepath:
+ ./assets/Avis On Rent Inv (NATIONWIDE) 2026-02-26.xlsx
+made it here
+Generating sheet...
+Sorting sheet...
+Converting Number Cells...
+Saving file...
+Sheet generated successfully.
+2026/02/26 19:38:08 email sent, ID:  <20260226193808.b9e2baf87c8cb025@mail.soonerfleet.com>
+2026/02/26 19:38:08 Recipients:  [stancoppinger@tulsacoxmail.com mike.allred@tulsacoxmail.com gregg.wessels@tulsacoxmail.com jaxcoppinger@tulsacoxmail.com jj.soonerfleet@gmail.com]
+2026/02/26 19:38:18 MAIL FROM: mike.allred@tulsacoxmail.com
+2026/02/26 19:38:18 RCPT TO: generate@soonerfleet.com
+2026/02/26 19:38:18 processing incoming email!
+email part:
+&{map[Content-Type:[multipart/alternative; boundary="----=_NextPart_001_002B_01DCA725.2B5E9680"]] 0xc0001c6ab0  map[] {0xc0001e2a10} 0 0 <nil> <nil>}
+email part:
+&{map[Content-Disposition:[attachment; filename="In-Service Inventory D2D 2.26.26.xlsx"] Content-Transfer-Encoding:[base64] Content-Type:[application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; name="In-Service Inventory D2D 2.26.26.xlsx"]] 0xc0001c6ab0  map[] {0xc0001e2b60} 0 0 <nil> <nil>}
+Wrote 2487099 bytes to file
+email part:
+<nil>
+no more parts
+2026/02/26 19:38:18 File successfully saved at:  /tmp/temp_excel_file.xlsx
+This is the savepath:
+ ./assets/Avis On Rent Inv (NATIONWIDE) 2026-02-26.xlsx
+made it here
+Generating sheet...
+Sorting sheet...
+Converting Number Cells...
+Saving file...
+Sheet generated successfully.
+2026/02/26 19:38:20 email sent, ID:  <20260226193820.65b3e1dd5fd6bbab@mail.soonerfleet.com>
+2026/02/26 19:38:20 Recipients:  [stancoppinger@tulsacoxmail.com mike.allred@tulsacoxmail.com gregg.wessels@tulsacoxmail.com jaxcoppinger@tulsacoxmail.com jj.soonerfleet@gmail.com]
+smtp/server 2026/02/27 03:49:32 error handling 162.216.149.83:52933: read tcp 192.168.1.117:25->162.216.149.83:52933: read: connection reset by peer
+2026/02/28 01:54:13 MAIL FROM: info@108-254-139-23.lightspeed.tulsok.sbcglobal.net
+2026/02/28 01:54:13 Rejecting MAIL from non-allowed sender: info@108-254-139-23.lightspeed.tulsok.sbcglobal.net
+smtp/server 2026/02/28 08:59:44 error handling 178.128.242.174:29971: read tcp 192.168.1.117:25->178.128.242.174:29971: read: connection reset by peer
+smtp/server 2026/03/01 16:36:03 error handling 35.203.210.82:50034: read tcp 192.168.1.117:25->35.203.210.82:50034: read: connection reset by peer
+smtp/server 2026/03/01 16:36:48 error handling 35.203.210.82:57466: read tcp 192.168.1.117:25->35.203.210.82:57466: read: connection reset by peer
+smtp/server 2026/03/01 16:37:04 error handling 35.203.210.82:57480: read tcp 192.168.1.117:25->35.203.210.82:57480: read: connection reset by peer
+2026/03/02 13:24:06 MAIL FROM: dpr@priv8shop.com
+2026/03/02 13:24:06 Rejecting MAIL from non-allowed sender: dpr@priv8shop.com
+2026/03/02 20:00:46 MAIL FROM: jaxcoppinger@tulsacoxmail.com
+2026/03/02 20:00:46 RCPT TO: generate@soonerfleet.com
+2026/03/02 20:00:46 processing incoming email!
+email part:
+&{map[Content-Type:[multipart/alternative; boundary="----=_NextPart_001_0049_01DCAA4C.F77A3510"]] 0xc000092090  map[] {0xc0001e2070} 0 0 <nil> <nil>}
+email part:
+&{map[Content-Disposition:[attachment; filename="In-Service Inventory D2D 3.2.26.xlsx"] Content-Transfer-Encoding:[base64] Content-Type:[application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; name="In-Service Inventory D2D 3.2.26.xlsx"]] 0xc000092090  map[] {0xc0001e2150} 0 0 <nil> <nil>}
+Wrote 2759155 bytes to file
+email part:
+<nil>
+no more parts
+2026/03/02 20:00:46 File successfully saved at:  /tmp/temp_excel_file.xlsx
+This is the savepath:
+ ./assets/Avis On Rent Inv (NATIONWIDE) 2026-03-02.xlsx
+made it here
+Generating sheet...
+Sorting sheet...
+Converting Number Cells...
+Saving file...
+Sheet generated successfully.
+2026/03/02 20:00:49 email sent, ID:  <20260302200049.78e75920c29caa33@mail.soonerfleet.com>
+2026/03/02 20:00:49 Recipients:  [stancoppinger@tulsacoxmail.com mike.allred@tulsacoxmail.com gregg.wessels@tulsacoxmail.com jaxcoppinger@tulsacoxmail.com jj.soonerfleet@gmail.com]
+2026/03/03 05:02:23 MAIL FROM: spameri@tiscali.it
+2026/03/03 05:02:23 Rejecting MAIL from non-allowed sender: spameri@tiscali.it

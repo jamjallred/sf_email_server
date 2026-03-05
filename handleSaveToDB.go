@@ -2,13 +2,11 @@ package main
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"io"
 	"log"
 	"mime"
 	"mime/multipart"
-	"net/http"
 	"net/mail"
 	"os"
 	"path/filepath"
@@ -19,7 +17,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func (s *session) handleGenerate(r io.Reader) error {
+func (s *session) handleSaveToDB(r io.Reader) error {
 	godotenv.Load()
 	msg, err := mail.ReadMessage(r)
 	if err != nil {
@@ -94,66 +92,29 @@ func (s *session) handleGenerate(r io.Reader) error {
 
 	// Send the email
 
-	var recipients []string
-
-	val := os.Getenv("USER_RECIPIENTS")
-	for _, item := range strings.Split(val, ",") {
-		cleanItem := strings.ToLower(strings.TrimSpace(item))
-		if cleanItem != "" {
-			recipients = append(recipients, cleanItem)
-		}
-	}
+	// recipients := []string{
+	// 	"stancoppinger@tulsacoxmail.com",
+	// 	"mike.allred@tulsacoxmail.com",
+	// 	"gregg.wessels@tulsacoxmail.com",
+	// 	"jaxcoppinger@tulsacoxmail.com",
+	// 	"jj.soonerfleet@gmail.com",
+	// }
 
 	if err := saveToDB(savePath); err != nil {
 		fmt.Printf("error saving to database %v\n", err)
 		return err
 	}
 
-	body := "Spreadsheet generated successfully!"
-	if err := sendEmail(recipients, body, savePath); err != nil {
-		fmt.Println("unable to send email: ", err)
-		os.Remove(savePath)
-		os.Remove(xlsxPath)
-		return err
-	}
+	// body := "Spreadsheet generated successfully!"
+	// if err := sendEmail(recipients, body, savePath); err != nil {
+	// 	fmt.Println("unable to send email: ", err)
+	// 	os.Remove(savePath)
+	// 	os.Remove(xlsxPath)
+	// 	return err
+	// }
 
 	os.Remove(savePath)
 	os.Remove(xlsxPath)
-
-	return nil
-}
-
-func saveToDB(xlsxPath string) error {
-
-	godotenv.Load()
-
-	if _, err := os.Stat(xlsxPath); err != nil {
-		fmt.Println("something has gone terribly wrong")
-		return err
-	}
-
-	if len(xlsxPath) <= 5 || xlsxPath[len(xlsxPath)-5:] != ".xlsx" {
-		return errors.New("file must be an .xlsx")
-	}
-
-	f, err := os.Open(xlsxPath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	url := os.Getenv("WEB_ENDPOINT_SAVE")
-	resp, err := http.Post(url, "application/octet-stream", f)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected response status: %s", resp.Status)
-	}
-
-	log.Println("Information successfully saved to database!")
 
 	return nil
 }
