@@ -34,3 +34,10 @@ go.work.sum
 build_and_run.sh
 
 assets/
+
+emailserver
+
+go.mod
+go.sum
+server.log
+sf_email_server
