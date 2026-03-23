@@ -3,6 +3,7 @@ module github.com/jamjallred/sf_email_server
 go 1.25.4
 
 require (
+	blitiri.com.ar/go/spf v1.5.1
 	github.com/emersion/go-smtp v0.24.0
 	github.com/jamjallred/sf_server_utils v0.0.0-00010101000000-000000000000
 	github.com/joho/godotenv v1.5.1

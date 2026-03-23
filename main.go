@@ -4,10 +4,12 @@ import (
 	"errors"
 	"io"
 	"log"
+	"net"
 	"net/mail"
 	"os"
 	"strings"
 
+	spf "blitiri.com.ar/go/spf"
 	smtplib "github.com/emersion/go-smtp"
 	"github.com/joho/godotenv"
 )
@@ -47,27 +49,51 @@ func load_config() {
 type backend struct{}
 
 func (b *backend) NewSession(c *smtplib.Conn) (smtplib.Session, error) {
+	remoteAddr := c.Conn().RemoteAddr().(*net.TCPAddr).IP
 	log.Printf("New connection from %s", c.Conn().RemoteAddr())
-	return &session{}, nil
+	return &session{
+		remoteIP: remoteAddr,
+	}, nil
 }
 
 // session stores state for a single SMTP session.
 type session struct {
-	from string
-	to   []string
+	remoteIP net.IP
+	from     string
+	to       []string
 }
 
 func (s *session) Mail(from string, opts *smtplib.MailOptions) error {
 	addr := normalizeAddress(from)
 	log.Printf("MAIL FROM: %s", addr)
 
-	if allowedSenders[addr] {
-		s.from = addr
-		return nil
+	if !allowedSenders[addr] {
+		log.Printf("Rejecting MAIL: %s is not a recognized sender", addr)
+		return errors.New("550 5.7.1 sender not authorized")
 	}
 
-	log.Printf("Rejecting MAIL: %s is not a recognized sender", addr)
-	return errors.New("550 5.7.1 sender not authorized")
+	// Extract domain for SPF check (e.g., "gmail.com")
+	parts := strings.Split(addr, "@")
+	if len(parts) != 2 {
+		return errors.New("501 5.1.7 Bad sender address syntax")
+	}
+	domain := parts[1]
+
+	// Perform SPF Check
+	result, err := spf.CheckHostWithSender(s.remoteIP, domain, addr)
+	if err != nil {
+		log.Printf("Internal SPF lookup: %v", err)
+	}
+
+	if result == spf.Fail {
+		log.Printf("REJECTING: %s is not an authorized IP for %s", s.remoteIP, addr)
+		return errors.New("550 5.7.1 SPF authentication failed")
+	}
+
+	log.Printf("SPF check result: %v", result)
+	s.from = addr
+	return nil
+
 }
 
 func (s *session) Rcpt(to string, opts *smtplib.RcptOptions) error {
@@ -119,6 +145,11 @@ func (s *session) Data(r io.Reader) error {
 }
 
 func (s *session) Reset() {
+	if s.from == "" {
+		log.Printf("Session closed from %s without MAIL FROM", s.remoteIP)
+	} else {
+		log.Printf("Session ended normally for %s", s.from)
+	}
 	s.from = ""
 	s.to = nil
 }
