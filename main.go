@@ -112,6 +112,8 @@ func (s *session) Rcpt(to string, opts *smtplib.RcptOptions) error {
 
 func (s *session) Data(r io.Reader) error {
 
+	godotenv.Load()
+
 	log.Print("processing incoming email!")
 
 	if containsAddr(s.to, "generate@soonerfleet.com") {
@@ -138,6 +140,13 @@ func (s *session) Data(r io.Reader) error {
 			log.Printf("Error in handleSaveToDB(): %s", err)
 		}
 		return nil
+	}
+
+	if containsAddr(s.to, os.Getenv("EMP1_EMAIL_PROXY")) {
+		err := s.handleForward(r, os.Getenv("EMP1_EMAIL"))
+		if err != nil {
+			log.Printf("Error in handleForward(): %s", err)
+		}
 	}
 
 	return nil

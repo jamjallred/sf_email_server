@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"log"
 	"os"
 	"time"
@@ -10,31 +12,33 @@ import (
 	"github.com/mailgun/mailgun-go/v4"
 )
 
-func sendEmail(recipients []string, body, filepath string) error {
+func (s *session) handleForward(r io.Reader, recipient string) error {
+
+	buf := new(bytes.Buffer)
+	_, err := io.Copy(buf, r)
+	if err != nil {
+		return err
+	}
+
+	bufWithCloser := io.NopCloser(buf)
+
 	godotenv.Load()
 	domain := os.Getenv("DOMAIN")
 	apiKey := os.Getenv("MAILGUN_API_KEY")
-	if apiKey == "" {
-		log.Fatal("MAILGUN_API_KEY not set")
-	}
-
 	mg := mailgun.NewMailgun(domain, apiKey)
 
-	sender := "no-reply@" + domain
-	subject := os.Getenv("FILENAME_PREFIX") + time.Now().Format("2006-01-02")
-
-	message := mailgun.NewMessage(sender, subject, body, recipients...)
-	message.AddAttachment(filepath)
+	recipients := []string{recipient}
+	message := mailgun.NewMIMEMessage(bufWithCloser, recipients...)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	_, id, err := mg.Send(ctx, message)
 	if err != nil {
+		log.Printf("Mailgun forward error: %v", err)
 		return err
 	}
 
-	log.Println("email sent, ID: ", id)
-	log.Println("Recipients: ", recipients)
+	log.Printf("Forward via Mailgun! ID: %s", id)
 	return nil
 }
