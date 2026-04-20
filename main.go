@@ -58,14 +58,18 @@ func (b *backend) NewSession(c *smtplib.Conn) (smtplib.Session, error) {
 
 // session stores state for a single SMTP session.
 type session struct {
-	remoteIP net.IP
-	from     string
-	to       []string
+	remoteIP        net.IP
+	from            string
+	to              []string
+	hasSeenMailFrom bool
 }
 
 func (s *session) Mail(from string, opts *smtplib.MailOptions) error {
 	addr := normalizeAddress(from)
 	log.Printf("MAIL FROM: %s", addr)
+	if addr != "" {
+		s.hasSeenMailFrom = true
+	}
 
 	if !allowedSenders[addr] {
 		log.Printf("Rejecting MAIL: %s is not a recognized sender", addr)
@@ -154,16 +158,16 @@ func (s *session) Data(r io.Reader) error {
 }
 
 func (s *session) Reset() {
-	if s.from == "" {
-		log.Printf("Session closed from %s without MAIL FROM", s.remoteIP)
-	} else {
-		log.Printf("Session ended normally for %s", s.from)
-	}
 	s.from = ""
 	s.to = nil
 }
 
 func (s *session) Logout() error {
+	if !s.hasSeenMailFrom {
+		log.Printf("Session closed from %s without MAIL FROM", s.remoteIP)
+	} else {
+		log.Printf("Session ended normally for %s", s.remoteIP)
+	}
 	return nil
 }
 
